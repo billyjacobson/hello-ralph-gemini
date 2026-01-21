@@ -1,27 +1,26 @@
 # Hello Ralph: The Ralph Loop with the Gemini CLI
 
-  
-This repo shows you how to get started with a minimal implementation of the **Ralph** technique using the Google Gemini CLI. With the specs and prompt, you'll learn the basic technique and spin up a simple Python game.
+This repo demonstrates a minimal implementation of the **Ralph** technique using the Google Gemini CLI. It's a self-contained autonomous loop that reads specs, writes code, and builds a Python game from scratch.
 
+## The Concept
+[Ralph](https://ghuntley.com/ralph/) replaces the idea of a single, long-running AI session with a continuous loop of fresh, ephemeral agents.
 
-## 🧠 The Concept
-The core idea behind [Ralph](https://ghuntley.com/ralph/) is to replace a single, long-running AI session with a continuous loop of fresh agents.
+1.  **Amnesia by Design**: Each iteration starts a brand new agent with zero context from the previous turn.
+2.  **State is on Disk**: The "memory" isn't in the context window; it's in `fix_plan.md` and the file system.
+3.  **Atomic Progress**: The agent reads the plan, executes exactly **one** task, updates the plan, and dies.
+4.  **Relentless Iteration**: The bash loop revives the agent until the job is done.
 
-1. **Amnesia by Design**: Each iteration starts a brand new agent with no memory of the previous turn.
-2. **State is on Disk**: The "memory" is stored in the spec files and `fix_plan.md`.
-3. **Atomic Progress**: The agent reads the plan, executes exactly **one** task, updates the plan, and terminates.
-4. **Relentless Iteration**: The loop keeps grinding until the plan is empty.
+## Quick Start
 
-## 🛠️ Prerequisites
-You need the Google Gemini CLI installed and authenticated:
-
+### 1. Setup
+Install and authenticate the [Gemini CLI](https://github.com/google-gemini/gemini-cli):
 ```bash
 npm install -g @google/gemini-cli
 gemini auth login
 ```
 
-## 🚀 How to Run
-Clone the repo and then to start the autonomous development loop, run this command in your terminal:
+### 2. Run the Loop
+Clone this repo, cd into it, and fire up the engine:
 
 ```bash
 while :; do
@@ -32,13 +31,23 @@ while :; do
 done
 ```
 
-Play the game by running: 
+**What's happening here?**
+*   We pipe `PROMPT.md` (the "brain") into the `gemini` command.
+*   `-m gemini-2.5-flash`: We use a fast, capable model.
+*   `--yolo`: **Crucial.** This flag auto-approves all tool use (file writing, shell commands). Without it, you'd have to approve every single action manually.
+
+### 3. Watch & Play
+Sit back. You'll see the `src/` directory populate as the agent ticks off items in `fix_plan.md`.
+
+When you see **`🏆 PROJECT_VICTORY`**, hit `Ctrl+C` to stop the loop.
+
+Then, play the game:
 ```bash
-python src/main.py
+python3 src/main.py
 ```
 
-## 📂 Project Structure
-- **`PROMPT.md`**: The system instructions that tell the agent how to behave (the "Sniper" protocol).
-- **`fix_plan.md`**: The source of truth for the project's state. It tracks what's done and what's next.
-- **`specs/game.md`**: The requirements for the application being built.
-- **`src/`**: Where the agent will build the source code.
+## Project Structure
+*   **`PROMPT.md`**: The system instructions. This is the "Sniper" protocol that enforces the atomic behavior.
+*   **`fix_plan.md`**: The project manager. It tracks what is done `[x]` and what is left `[ ]`.
+*   **`specs/game.md`**: The actual requirements for the software we are building.
+*   **`src/`**: The output directory for the generated code.
