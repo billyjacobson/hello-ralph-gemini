@@ -26,14 +26,13 @@ Clone this repo, cd into it, and fire up the engine:
 while :; do
   echo "--------------------------------"
   echo "♻️  RESTARTING AGENT..."
-  cat PROMPT.md | gemini -m gemini-2.5-flash --yolo
+  cat PROMPT.md | gemini --yolo
   sleep 0.5
 done
 ```
 
 **What's happening here?**
 *   We pipe `PROMPT.md` (the "brain") into the `gemini` command.
-*   `-m gemini-2.5-flash`: We use a fast, capable model.
 *   `--yolo`: **Crucial.** This flag auto-approves all tool use (file writing, shell commands). Without it, you'd have to approve every single action manually.
 
 ### 3. Watch & Play
